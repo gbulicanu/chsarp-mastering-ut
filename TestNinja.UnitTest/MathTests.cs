@@ -25,33 +25,16 @@ namespace TestNinja.UnitTest
         }
 
         [Test]
-        public void Max_FirstArgumentsIsGreater_ReturnTheFirstArgument()
+        [TestCase(2, 1, 2)]
+        [TestCase(1, 2, 2)]
+        [TestCase(1, 1, 1)]
+        public void Max_WhenCalled_ReturnTheGreaterArgument(int a, int b, int expectedResult)
         {
             // Act
-            var result = this.math.Max(2, 1);
+            var result = this.math.Max(a, b);
 
             // Assert
-            Assert.That(result, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void Max_SecondArgumentsIsGreater_ReturnTheSecondArgument()
-        {
-            // Act
-            var result = this.math.Max(1, 2);
-
-            // Assert
-            Assert.That(result, Is.EqualTo(2));
-        }
-
-        [Test]
-        public void Max_ArgumentsAreEqual_ReturnTheSame()
-        {
-            // Act
-            var result = this.math.Max(1, 1);
-
-            // Assert
-            Assert.That(result, Is.EqualTo(1));
+            Assert.That(result, Is.EqualTo(expectedResult));
         }
     }
 }
