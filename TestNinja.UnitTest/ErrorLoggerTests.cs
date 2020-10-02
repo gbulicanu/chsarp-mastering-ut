@@ -31,5 +31,17 @@ namespace TestNinja.UnitTest
                 () => errorLogger.Log(error),
                 Throws.ArgumentNullException);
         }
+
+        [Test]
+        public void Log_ValidError_RaisesErrorLoggedEvent()
+        {
+            var errorLogger = new ErrorLogger();
+            var id = Guid.Empty;
+
+            errorLogger.ErrorLogged += (sender, args) => { id = args; };
+            errorLogger.Log("a");
+
+            Assert.That(id, Is.Not.EqualTo(Guid.Empty));
+        }
     }
 }
