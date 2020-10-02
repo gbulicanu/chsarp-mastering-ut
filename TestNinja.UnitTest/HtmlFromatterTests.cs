@@ -15,7 +15,7 @@ namespace TestNinja.UnitTest
             var result = htmlFormater.FormatAsBold(input);
 
             // Very specific test assertion
-            // Assert.That(result, Is.EqualTo("<strong>abc</strong>"));
+            Assert.That(result, Is.EqualTo("<strong>abc</strong>").IgnoreCase);
 
             // More general
             Assert.That(result, Does.StartWith("<strong>").IgnoreCase);
