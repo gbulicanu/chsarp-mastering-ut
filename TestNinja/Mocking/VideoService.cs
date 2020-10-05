@@ -11,7 +11,7 @@ namespace TestNinja.Mocking
     {
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            var str = new FileReader().Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
@@ -21,14 +21,14 @@ namespace TestNinja.Mocking
         public string GetUnprocessedVideosAsCsv()
         {
             var videoIds = new List<int>();
-            
+
             using (var context = new VideoContext())
             {
-                var videos = 
+                var videos =
                     (from video in context.Videos
-                    where !video.IsProcessed
-                    select video).ToList();
-                
+                     where !video.IsProcessed
+                     select video).ToList();
+
                 foreach (var v in videos)
                     videoIds.Add(v.Id);
 
