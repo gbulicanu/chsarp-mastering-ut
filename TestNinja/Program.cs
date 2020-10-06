@@ -7,7 +7,7 @@ namespace TestNinja
     {
         public void Main(string[] args)
         {
-            var videoService = new VideoService();
+            var videoService = new VideoService(new FileReader());
             var videoTitle = videoService.ReadVideoTitle();
 
             Console.WriteLine(videoTitle);
