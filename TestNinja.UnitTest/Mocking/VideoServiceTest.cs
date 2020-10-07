@@ -9,6 +9,7 @@ namespace TestNinja.UnitTest.Mocking
     public class VideoServiceTests
     {
         private Mock<IFileReader> fileReader;
+        private Mock<IVideoRepository> videoRepository;
         private VideoService videoService;
 
 
@@ -16,7 +17,10 @@ namespace TestNinja.UnitTest.Mocking
         public void SetUp()
         {
             this.fileReader = new Mock<IFileReader>();
-            this.videoService = new VideoService(this.fileReader.Object);
+            this.videoRepository = new Mock<IVideoRepository>();
+            this.videoService = new VideoService(
+                this.fileReader.Object,
+                this.videoRepository.Object);
         }
 
         [Test]

@@ -9,11 +9,16 @@ namespace TestNinja.Mocking
     public class VideoService
     {
         private readonly IFileReader fileReader;
+        private readonly IVideoRepository videoRepository;
 
-        public VideoService(IFileReader fileReader)
+        public VideoService(
+            IFileReader fileReader,
+            IVideoRepository videoRepository)
         {
             this.fileReader = fileReader;
+            this.videoRepository = videoRepository;
         }
+
         public string ReadVideoTitle()
         {
             var str = this.fileReader.Read("video.txt");
@@ -27,18 +32,12 @@ namespace TestNinja.Mocking
         {
             var videoIds = new List<int>();
 
-            using (var context = new VideoContext())
-            {
-                var videos =
-                    (from video in context.Videos
-                     where !video.IsProcessed
-                     select video).ToList();
+            var videos = this.videoRepository.GetUnprocessedVideos();
 
-                foreach (var v in videos)
-                    videoIds.Add(v.Id);
+            foreach (var v in videos)
+                videoIds.Add(v.Id);
 
-                return String.Join(",", videoIds);
-            }
+            return string.Join(",", videoIds);
         }
     }
 
