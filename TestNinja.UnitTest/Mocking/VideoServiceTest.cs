@@ -1,6 +1,9 @@
 using Moq;
 
 using NUnit.Framework;
+
+using System.Linq;
+
 using TestNinja.Mocking;
 
 namespace TestNinja.UnitTest.Mocking
@@ -31,6 +34,31 @@ namespace TestNinja.UnitTest.Mocking
             var result = videoService.ReadVideoTitle();
 
             Assert.That(result, Does.Contain("error").IgnoreCase);
+        }
+
+        [Test]
+        public void GetUnprocessedVideosAsCsv_AllProcessedVideos_ReturnEmptyString()
+        {
+            videoRepository.Setup(x => x.GetUnprocessedVideos())
+                .Returns(Enumerable.Empty<Video>());
+
+            var result = videoService.GetUnprocessedVideosAsCsv();
+
+            Assert.That(result, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void GetUnprocessedVideosAsCsv_AFewUnprocessedVideos_ReturnUnprocessedVideoIdsAsCsv() 
+        {
+            videoRepository.Setup(x => x.GetUnprocessedVideos())
+                .Returns(new Video[] {
+                    new Video { Id = 1 },
+                    new Video { Id = 2 },
+                });
+
+            var result = videoService.GetUnprocessedVideosAsCsv();
+
+            Assert.That(result, Is.EqualTo("1,2"));
         }
     }
 }
