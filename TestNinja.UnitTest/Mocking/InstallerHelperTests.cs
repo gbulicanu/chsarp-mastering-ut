@@ -15,7 +15,7 @@ namespace TestNinja.UnitTest.Mocking
         private InstallerHelper installerHelper;
 
         [SetUp]
-        public void SetUp() 
+        public void SetUp()
         {
             this.fileDownloader = new Mock<IFileDownloader>();
             this.installerHelper = new InstallerHelper(
@@ -24,7 +24,7 @@ namespace TestNinja.UnitTest.Mocking
         }
 
         [Test]
-        public void DownloadInstaller_NetworkError_ReturnFalse() 
+        public void DownloadInstaller_NetworkError_ReturnFalse()
         {
             this.fileDownloader.Setup(x => x.DownloadFile(
                     string.Format("http://example.com/{0}/{1}", "a", "b"), "d"))
@@ -36,7 +36,7 @@ namespace TestNinja.UnitTest.Mocking
         }
 
         [Test]
-        public void DownloadInstaller_SuccesfullDownload_ReturnTrue()
+        public void DownloadInstaller_SuccessfullDownload_ReturnTrue()
         {
             var result = installerHelper.DownloadInstaller("a", "b");
 
