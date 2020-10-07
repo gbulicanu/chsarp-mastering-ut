@@ -4,7 +4,13 @@ namespace TestNinja.Mocking
 {
     public class InstallerHelper
     {
+        private readonly IFileDownloader fileDownloader;
         private string setupDestinationFile;
+
+        public InstallerHelper(IFileDownloader fileDownloader)
+        {
+            this.fileDownloader = fileDownloader;
+        }
 
         public bool DownloadInstaller(
             string customerName,
@@ -13,7 +19,7 @@ namespace TestNinja.Mocking
             try
             {
 
-                new FileDownloader().DownloadFile(
+                this.fileDownloader.DownloadFile(
                     customerName,
                     installerName,
                     this.setupDestinationFile);

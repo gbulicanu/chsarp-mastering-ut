@@ -2,7 +2,7 @@
 
 namespace TestNinja
 {
-    public class FileDownloader
+    public class FileDownloader : IFileDownloader
     {
 
         public void DownloadFile(
