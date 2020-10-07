@@ -26,7 +26,8 @@ namespace TestNinja.UnitTest.Mocking
         [Test]
         public void DownloadInstaller_NetworkError_ReturnFalse() 
         {
-            this.fileDownloader.Setup(x => x.DownloadFile("a", "b", "d"))
+            this.fileDownloader.Setup(x => x.DownloadFile(
+                    string.Format("http://example.com/{0}/{1}", "a", "b"), "d"))
                 .Throws<WebException>();
 
             var result = installerHelper.DownloadInstaller("a", "b");

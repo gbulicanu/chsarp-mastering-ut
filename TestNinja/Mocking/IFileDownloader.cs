@@ -2,6 +2,6 @@
 {
     public interface IFileDownloader
     {
-        void DownloadFile(string customerName, string installerName, string setupDestinationFile);
+        void DownloadFile(string url, string path);
     }
 }

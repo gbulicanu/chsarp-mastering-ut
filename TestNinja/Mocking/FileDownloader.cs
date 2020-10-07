@@ -5,19 +5,12 @@ namespace TestNinja
     public class FileDownloader : IFileDownloader
     {
 
-        public void DownloadFile(
-            string customerName,
-            string installerName,
-            string setupDestinationFile)
+        public void DownloadFile(string url, string path)
         {
             using (var client = new WebClient())
             {
 
-                client.DownloadFile(
-                    string.Format("http://example.com/{0}/{1}",
-                        customerName,
-                        installerName),
-                    setupDestinationFile);
+                client.DownloadFile(url, path);
             }
         }
     }

@@ -21,10 +21,10 @@ namespace TestNinja.Mocking
         {
             try
             {
-
                 this.fileDownloader.DownloadFile(
-                    customerName,
-                    installerName,
+                    string.Format("http://example.com/{0}/{1}",
+                        customerName,
+                        installerName),
                     this.setupDestinationFile);
 
                 return true;
