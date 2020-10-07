@@ -7,9 +7,12 @@ namespace TestNinja.Mocking
         private readonly IFileDownloader fileDownloader;
         private string setupDestinationFile;
 
-        public InstallerHelper(IFileDownloader fileDownloader)
+        public InstallerHelper(
+            IFileDownloader fileDownloader,
+            string setupDestinationFile = null)
         {
             this.fileDownloader = fileDownloader;
+            this.setupDestinationFile = setupDestinationFile;
         }
 
         public bool DownloadInstaller(
