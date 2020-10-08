@@ -9,15 +9,15 @@ namespace TestNinja.UnitTest.Mocking
     [TestFixture]
     public class EmployeeConrollerTests
     {
-        private Mock<IEmployeeStorage> emplyeeStorage;
+        private Mock<IEmployeeStorage> employeeStorage;
         private EmployeeController employeeController;
 
         [SetUp]
-        public void SetUp() 
+        public void SetUp()
         {
-            this.emplyeeStorage = new Mock<IEmployeeStorage>();
+            this.employeeStorage = new Mock<IEmployeeStorage>();
             this.employeeController =
-                new EmployeeController(this.emplyeeStorage.Object);
+                new EmployeeController(this.employeeStorage.Object);
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace TestNinja.UnitTest.Mocking
         {
             this.employeeController.DeleteEmployee(1);
 
-            this.emplyeeStorage.Verify(x => x.DeleteEmployee(1));
+            this.employeeStorage.Verify(x => x.DeleteEmployee(1));
         }
 
         [Test]
-        public void DeleteEmplyee_WhenCalled_ReturnRedirectResult()
+        public void DeleteEmployee_WhenCalled_ReturnRedirectResult()
         {
             var result = this.employeeController.DeleteEmployee(1);
 
