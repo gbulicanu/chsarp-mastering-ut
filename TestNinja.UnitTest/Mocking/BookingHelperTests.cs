@@ -68,6 +68,22 @@ namespace TestNinja.UnitTest.Mocking
         }
 
         [Test]
+        public void BookingStartsBeforeAndFinishesAfterExistingBooking_ReturnExistingBookingReference()
+        {
+            var result = BookingHelper.OverlappingBookingsExist(
+                new Booking
+                {
+                    Id = 1,
+                    ArrivalDate = Before(this.existingBooking.ArrivalDate),
+                    DepartureDate = After(this.existingBooking.DepartureDate),
+                    Reference = "a"
+                },
+                this.bookingRepository.Object);
+
+            Assert.That(result, Is.EqualTo(this.existingBooking.Reference));
+        }
+
+        [Test]
         public void CancelledBooking_ReturnEmptyString()
         {
             var result = BookingHelper.OverlappingBookingsExist(
