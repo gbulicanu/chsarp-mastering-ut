@@ -20,7 +20,7 @@ namespace TestNinja.UnitTest.Mocking
         private Mock<IEmailSender> emailSender;
         private Mock<IXtraMessageBox> xtraMessageBox;
         private HousekeeperService service;
-        private readonly string statementFilename = "filename";
+        private string statementFilename;
 
         [SetUp]
         public void SetUp()
@@ -33,14 +33,22 @@ namespace TestNinja.UnitTest.Mocking
                 StatementEmailBody = "c"
             };
 
-            unitOfWork = new Mock<IUnitOfWork>();
-            unitOfWork.Setup(x => x.Query<Housekeeper>())
+            this.unitOfWork = new Mock<IUnitOfWork>();
+            this.unitOfWork.Setup(x => x.Query<Housekeeper>())
                 .Returns(new List<Housekeeper> { housekeeper }.AsQueryable());
-            statementGenerator = new Mock<IStatementGenerator>();
-            emailSender = new Mock<IEmailSender>();
-            xtraMessageBox = new Mock<IXtraMessageBox>();
 
-            service = new HousekeeperService(
+            this.statementFilename = "filename";
+            this.statementGenerator = new Mock<IStatementGenerator>();
+            this.statementGenerator.Setup(
+                x => x.SaveStatement(
+                    housekeeper.Oid,
+                    housekeeper.FullName,
+                    this.statementDate))
+                .Returns(this.statementFilename);
+            this.emailSender = new Mock<IEmailSender>();
+            this.xtraMessageBox = new Mock<IXtraMessageBox>();
+
+            this.service = new HousekeeperService(
                 unitOfWork.Object,
                 statementGenerator.Object,
                 emailSender.Object,
@@ -76,13 +84,6 @@ namespace TestNinja.UnitTest.Mocking
         [Test]
         public void SendStatementEmails_WhenCalled_ShouldEmailTheStatements()
         {
-            this.statementGenerator.Setup(
-                x => x.SaveStatement(
-                    housekeeper.Oid,
-                    housekeeper.FullName,
-                    this.statementDate))
-                .Returns(this.statementFilename);
-
             this.service.SendStatementEmails(this.statementDate);
 
             this.emailSender.Verify(x => x.EmailFile(
@@ -98,12 +99,7 @@ namespace TestNinja.UnitTest.Mocking
         public void SendStatementEmails_StatementFileNameIs_ShouldNotEmailTheStatements(
             string statementFilename)
         {
-            this.statementGenerator.Setup(
-                x => x.SaveStatement(
-                    housekeeper.Oid,
-                    housekeeper.FullName,
-                    this.statementDate))
-                .Returns(statementFilename);
+            this.statementFilename = statementFilename;
 
             this.service.SendStatementEmails(this.statementDate);
 
