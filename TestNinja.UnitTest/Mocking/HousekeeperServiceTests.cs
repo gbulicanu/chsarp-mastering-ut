@@ -44,7 +44,7 @@ namespace TestNinja.UnitTest.Mocking
                     housekeeper.Oid,
                     housekeeper.FullName,
                     this.statementDate))
-                .Returns(this.statementFilename);
+                .Returns(() => this.statementFilename);
             this.emailSender = new Mock<IEmailSender>();
             this.xtraMessageBox = new Mock<IXtraMessageBox>();
 
