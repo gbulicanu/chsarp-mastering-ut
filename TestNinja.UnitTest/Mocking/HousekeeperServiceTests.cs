@@ -57,34 +57,13 @@ namespace TestNinja.UnitTest.Mocking
                 this.statementDate));
         }
 
-        [Test]
-        public void SendStatementEmails_HousekeepersEmailIsNull_ShouldNotGenerateStatements()
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void SendStatementEmails_HousekeepersEmail_ShouldNotGenerateStatements(
+            string email)
         {
-            this.housekeeper.Email = null;
-            this.service.SendStatementEmails(this.statementDate);
-
-            this.statementGenerator.Verify(x => x.SaveStatement(
-                housekeeper.Oid,
-                housekeeper.FullName,
-                this.statementDate), Times.Never);
-        }
-
-        [Test]
-        public void SendStatementEmails_HousekeepersEmailIsWhitespace_ShouldNotGenerateStatements()
-        {
-            this.housekeeper.Email = " ";
-            this.service.SendStatementEmails(this.statementDate);
-
-            this.statementGenerator.Verify(x => x.SaveStatement(
-                housekeeper.Oid,
-                housekeeper.FullName,
-                this.statementDate), Times.Never);
-        }
-
-        [Test]
-        public void SendStatementEmails_HousekeepersEmailIsEmpty_ShouldNotGenerateStatements()
-        {
-            this.housekeeper.Email = "";
+            this.housekeeper.Email = email;
             this.service.SendStatementEmails(this.statementDate);
 
             this.statementGenerator.Verify(x => x.SaveStatement(
