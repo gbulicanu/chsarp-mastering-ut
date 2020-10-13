@@ -20,6 +20,7 @@ namespace TestNinja.UnitTest.Mocking
         private Mock<IEmailSender> emailSender;
         private Mock<IXtraMessageBox> xtraMessageBox;
         private HousekeeperService service;
+        private readonly string statementFilename = "filename";
 
         [SetUp]
         public void SetUp()
@@ -70,6 +71,47 @@ namespace TestNinja.UnitTest.Mocking
                 housekeeper.Oid,
                 housekeeper.FullName,
                 this.statementDate), Times.Never);
+        }
+
+        [Test]
+        public void SendStatementEmails_WhenCalled_ShouldEmailTheStatements()
+        {
+            this.statementGenerator.Setup(
+                x => x.SaveStatement(
+                    housekeeper.Oid,
+                    housekeeper.FullName,
+                    this.statementDate))
+                .Returns(this.statementFilename);
+
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.emailSender.Verify(x => x.EmailFile(
+                housekeeper.Email,
+                housekeeper.StatementEmailBody,
+                this.statementFilename,
+                It.IsAny<string>()));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void SendStatementEmails_StatementFileNameIs_ShouldNotEmailTheStatements(
+            string statementFilename)
+        {
+            this.statementGenerator.Setup(
+                x => x.SaveStatement(
+                    housekeeper.Oid,
+                    housekeeper.FullName,
+                    this.statementDate))
+                .Returns(statementFilename);
+
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.emailSender.Verify(x => x.EmailFile(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>()), Times.Never);
         }
     }
 }
