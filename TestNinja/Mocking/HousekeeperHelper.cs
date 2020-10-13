@@ -21,7 +21,7 @@ namespace TestNinja.Mocking
             this.xtraMessageBox = xtraMessageBox;
         }
 
-        public bool SendStatementEmails(DateTime statementDate)
+        public void SendStatementEmails(DateTime statementDate)
         {
             var housekeepers = this.unitOfWork.Query<Housekeeper>();
 
@@ -49,8 +49,6 @@ namespace TestNinja.Mocking
                         MessageBoxButtons.OK);
                 }
             }
-
-            return true;
         }
     }
 
