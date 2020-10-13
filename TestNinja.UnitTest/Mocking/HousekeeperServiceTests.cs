@@ -56,5 +56,41 @@ namespace TestNinja.UnitTest.Mocking
                 housekeeper.FullName,
                 this.statementDate));
         }
+
+        [Test]
+        public void SendStatementEmails_HousekeepersEmailIsNull_ShouldNotGenerateStatements()
+        {
+            this.housekeeper.Email = null;
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate), Times.Never);
+        }
+
+        [Test]
+        public void SendStatementEmails_HousekeepersEmailIsWhitespace_ShouldNotGenerateStatements()
+        {
+            this.housekeeper.Email = " ";
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate), Times.Never);
+        }
+
+        [Test]
+        public void SendStatementEmails_HousekeepersEmailIsEmpty_ShouldNotGenerateStatements()
+        {
+            this.housekeeper.Email = "";
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate), Times.Never);
+        }
     }
 }
