@@ -109,5 +109,22 @@ namespace TestNinja.UnitTest.Mocking
                 It.IsAny<string>(),
                 It.IsAny<string>()), Times.Never);
         }
+
+        [Test]
+        public void SendStatementEmails_EmailSendingFails_DisplayMessageBox()
+        {
+            this.emailSender.Setup(x => x.EmailFile(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>())).Throws<Exception>();
+
+            this.service.SendStatementEmails(this.statementDate);
+
+            this.xtraMessageBox.Verify(x => x.Show(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                MessageBoxButtons.OK));
+        }
     }
 }
