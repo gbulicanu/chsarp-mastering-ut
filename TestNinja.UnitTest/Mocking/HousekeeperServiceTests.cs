@@ -13,34 +13,48 @@ namespace TestNinja.UnitTest.Mocking
     [TestFixture]
     public class HousekeeperServiceTests
     {
-        [Test]
-        public void SendStatementEmails_WhenCalled_GenerateStatements() 
-        {
-            var unitOfWork = new Mock<IUnitOfWork>();
-            unitOfWork.Setup(x => x.Query<Housekeeper>())
-                .Returns(new List<Housekeeper>
-                {
-                    new Housekeeper
-                    {
-                        Oid = 1,
-                        Email = "a",
-                        FullName = "b",
-                        StatementEmailBody="c"
-                    }
-                }.AsQueryable());
-            var statementGenerator = new Mock<IStatementGenerator>();
-            var emailSender = new Mock<IEmailSender>();
-            var xtraMessageBox = new Mock<IXtraMessageBox>();
+        private Housekeeper housekeeper;
+        private Mock<IUnitOfWork> unitOfWork;
+        private DateTime statementDate = new DateTime(2020, 10, 12);
+        private Mock<IStatementGenerator> statementGenerator;
+        private Mock<IEmailSender> emailSender;
+        private Mock<IXtraMessageBox> xtraMessageBox;
+        private HousekeeperService service;
 
-            var housekeeperService = new HousekeeperService(
+        [SetUp]
+        public void SetUp()
+        {
+            this.housekeeper = new Housekeeper
+            {
+                Oid = 1,
+                Email = "a",
+                FullName = "b",
+                StatementEmailBody = "c"
+            };
+
+            unitOfWork = new Mock<IUnitOfWork>();
+            unitOfWork.Setup(x => x.Query<Housekeeper>())
+                .Returns(new List<Housekeeper> { housekeeper }.AsQueryable());
+            statementGenerator = new Mock<IStatementGenerator>();
+            emailSender = new Mock<IEmailSender>();
+            xtraMessageBox = new Mock<IXtraMessageBox>();
+
+            service = new HousekeeperService(
                 unitOfWork.Object,
                 statementGenerator.Object,
                 emailSender.Object,
                 xtraMessageBox.Object);
+        }
 
-            housekeeperService.SendStatementEmails(new DateTime(2020, 10, 12));
+        [Test]
+        public void SendStatementEmails_WhenCalled_GenerateStatements() 
+        {
+            this.service.SendStatementEmails(this.statementDate);
 
-            statementGenerator.Verify(x => x.SaveStatement(1, "b", new DateTime(2020, 10, 12)));
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate));
         }
     }
 }
