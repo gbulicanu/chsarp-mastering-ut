@@ -56,14 +56,11 @@ namespace TestNinja.UnitTest.Mocking
         }
 
         [Test]
-        public void SendStatementEmails_WhenCalled_GenerateStatements() 
+        public void SendStatementEmails_WhenCalled_GenerateStatements()
         {
             this.service.SendStatementEmails(this.statementDate);
 
-            this.statementGenerator.Verify(x => x.SaveStatement(
-                housekeeper.Oid,
-                housekeeper.FullName,
-                this.statementDate));
+            VerifyStatementGenerated();
         }
 
         [TestCase(null)]
@@ -75,10 +72,7 @@ namespace TestNinja.UnitTest.Mocking
             this.housekeeper.Email = email;
             this.service.SendStatementEmails(this.statementDate);
 
-            this.statementGenerator.Verify(x => x.SaveStatement(
-                housekeeper.Oid,
-                housekeeper.FullName,
-                this.statementDate), Times.Never);
+            VerifyStatementNotGenerated();
         }
 
         [Test]
@@ -86,11 +80,7 @@ namespace TestNinja.UnitTest.Mocking
         {
             this.service.SendStatementEmails(this.statementDate);
 
-            this.emailSender.Verify(x => x.EmailFile(
-                housekeeper.Email,
-                housekeeper.StatementEmailBody,
-                this.statementFilename,
-                It.IsAny<string>()));
+            VerifyEmailSent();
         }
 
         [TestCase(null)]
@@ -103,11 +93,7 @@ namespace TestNinja.UnitTest.Mocking
 
             this.service.SendStatementEmails(this.statementDate);
 
-            this.emailSender.Verify(x => x.EmailFile(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()), Times.Never);
+            VerifyEmailNotSent();
         }
 
         [Test]
@@ -121,6 +107,45 @@ namespace TestNinja.UnitTest.Mocking
 
             this.service.SendStatementEmails(this.statementDate);
 
+            VerifyMessageBoxShown();
+        }
+
+        private void VerifyEmailNotSent()
+        {
+            this.emailSender.Verify(x => x.EmailFile(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>()), Times.Never);
+        }
+
+        private void VerifyEmailSent()
+        {
+            this.emailSender.Verify(x => x.EmailFile(
+                housekeeper.Email,
+                housekeeper.StatementEmailBody,
+                this.statementFilename,
+                It.IsAny<string>()));
+        }
+
+        private void VerifyStatementGenerated()
+        {
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate));
+        }
+
+        private void VerifyStatementNotGenerated()
+        {
+            this.statementGenerator.Verify(x => x.SaveStatement(
+                housekeeper.Oid,
+                housekeeper.FullName,
+                this.statementDate), Times.Never);
+        }
+
+        private void VerifyMessageBoxShown()
+        {
             this.xtraMessageBox.Verify(x => x.Show(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
